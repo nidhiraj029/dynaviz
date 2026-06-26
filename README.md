@@ -1,5 +1,7 @@
 <img width="167" height="57" alt="image" src="https://github.com/user-attachments/assets/a3047248-f560-4bc7-9ef5-2b734fdf3811" />
-<img width="480" height="480" alt="giphy" src="https://github.com/user-attachments/assets/c490f3a8-2bdf-4253-994a-0465db79a4e1" />
+
+
+<img width="100" height="100" alt="giphy" src="https://github.com/user-attachments/assets/c490f3a8-2bdf-4253-994a-0465db79a4e1" />
 
 
 # DynaViz — Interactive Pathfinding & Maze Sandbox
