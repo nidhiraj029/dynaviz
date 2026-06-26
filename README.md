@@ -8,6 +8,8 @@ DynaViz is a high-performance interactive sandbox web application designed to vi
 Built with a **FastAPI** backend and a responsive, glassmorphic **Vanilla JS/CSS** frontend.
 
 ---
+<img width="1880" height="883" alt="image" src="https://github.com/user-attachments/assets/0c5d4d67-e888-41bb-a769-6de8f33f2c4f" />
+
 
 ## 🚀 Key Features
 
