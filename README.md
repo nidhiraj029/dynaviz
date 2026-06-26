@@ -1,4 +1,5 @@
 <img width="167" height="57" alt="image" src="https://github.com/user-attachments/assets/a3047248-f560-4bc7-9ef5-2b734fdf3811" />
+<img width="480" height="480" alt="giphy" src="https://github.com/user-attachments/assets/c490f3a8-2bdf-4253-994a-0465db79a4e1" />
 
 
 # DynaViz — Interactive Pathfinding & Maze Sandbox
@@ -9,6 +10,10 @@ Built with a **FastAPI** backend and a responsive, glassmorphic **Vanilla JS/CSS
 
 ---
 <img width="1880" height="883" alt="image" src="https://github.com/user-attachments/assets/0c5d4d67-e888-41bb-a769-6de8f33f2c4f" />
+
+
+https://github.com/user-attachments/assets/5288b9fa-c4ea-4b9f-bc2e-fcb9b9f2b0e2
+
 
 
 ## 🚀 Key Features
