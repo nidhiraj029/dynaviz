@@ -1,0 +1,14 @@
+# Virtual environment
+.venv/
+env/
+ENV/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Local database
+dynaviz.db

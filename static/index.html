@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DynaViz — Interactive Pathfinding & Maze Generator Sandbox</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon"></div>
+                <h1>DynaViz</h1>
+                <span class="subtitle">Pathfinding & Maze Sandbox</span>
+            </div>
+            <div class="header-actions">
+                <button id="btn-theme-toggle" class="btn btn-secondary btn-icon" title="Toggle Theme" style="display:none;">
+                    <!-- Theme Icon placeholder if needed -->
+                </button>
+                <div class="mode-selector">
+                    <button id="mode-single" class="btn btn-mode active">Single Grid</button>
+                    <button id="mode-comparison" class="btn btn-mode">Comparison Mode</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT -->
+        <div class="app-body">
+            <!-- SIDEBAR CONTROL CENTER -->
+            <aside class="control-panel glass">
+                <!-- Section 1: Brush / Paint tool -->
+                <div class="control-section">
+                    <h3>Interactive Brush</h3>
+                    <div class="brush-selector">
+                        <button id="brush-wall" class="btn btn-brush active" data-brush="wall">
+                            <span class="color-dot brush-wall-dot"></span> Wall
+                        </button>
+                        <button id="brush-weight" class="btn btn-brush" data-brush="weight">
+                            <span class="color-dot brush-weight-dot"></span> Mud (Cost: 5)
+                        </button>
+                        <button id="brush-eraser" class="btn btn-brush" data-brush="eraser">
+                            <span class="color-dot brush-eraser-dot"></span> Eraser
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section 2: Pathfinding Setup -->
+                <div class="control-section">
+                    <h3>Pathfinding Algorithms</h3>
+                    
+                    <div class="select-group">
+                        <label for="alg-primary">Algorithm A (Left)</label>
+                        <select id="alg-primary" class="form-select">
+                            <option value="astar" selected>A* Search</option>
+                            <option value="gbfs">Greedy Best-First (GBFS)</option>
+                            <option value="dijkstra">Dijkstra's Algorithm</option>
+                            <option value="bfs">Breadth-First Search (BFS)</option>
+                            <option value="dfs">Depth-First Search (DFS)</option>
+                            <option value="bidirectional_bfs">Bidirectional BFS</option>
+                        </select>
+                    </div>
+
+                    <div id="heuristic-a-group" class="select-group">
+                        <label for="heuristic-primary">A* Heuristic A</label>
+                        <select id="heuristic-primary" class="form-select">
+                            <option value="manhattan" selected>Manhattan (4-way)</option>
+                            <option value="euclidean">Euclidean (Straight line)</option>
+                            <option value="chebyshev">Chebyshev (8-way)</option>
+                        </select>
+                    </div>
+
+                    <!-- Appears only in comparison mode -->
+                    <div id="comparison-alg-group" class="select-group hidden">
+                        <label for="alg-secondary">Algorithm B (Right)</label>
+                        <select id="alg-secondary" class="form-select">
+                            <option value="bfs" selected>Breadth-First Search (BFS)</option>
+                            <option value="gbfs">Greedy Best-First (GBFS)</option>
+                            <option value="dijkstra">Dijkstra's Algorithm</option>
+                            <option value="astar">A* Search</option>
+                            <option value="dfs">Depth-First Search (DFS)</option>
+                            <option value="bidirectional_bfs">Bidirectional BFS</option>
+                        </select>
+                    </div>
+
+                    <div id="heuristic-b-group" class="select-group hidden">
+                        <label for="heuristic-secondary">A* Heuristic B</label>
+                        <select id="heuristic-secondary" class="form-select">
+                            <option value="manhattan" selected>Manhattan (4-way)</option>
+                            <option value="euclidean">Euclidean (Straight line)</option>
+                            <option value="chebyshev">Chebyshev (8-way)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Section 3: Maze Generation -->
+                <div class="control-section">
+                    <h3>Maze Generators</h3>
+                    <div class="maze-generator-row">
+                        <select id="maze-alg" class="form-select">
+                            <option value="backtracking" selected>Recursive Backtracking</option>
+                            <option value="kruskals">Kruskal's Algorithm</option>
+                            <option value="prims">Prim's Algorithm</option>
+                        </select>
+                        <button id="btn-generate-maze" class="btn btn-accent">Generate</button>
+                    </div>
+                </div>
+
+                <!-- Section 4: Speed Control -->
+                <div class="control-section">
+                    <div class="speed-label">
+                        <h3>Visualization Speed</h3>
+                        <span id="speed-val">Fast</span>
+                    </div>
+                    <input type="range" id="speed-slider" min="0" max="3" value="2" class="form-range">
+                    <div class="speed-ticks">
+                        <span>Slow</span>
+                        <span>Med</span>
+                        <span>Fast</span>
+                        <span>Instant</span>
+                    </div>
+                </div>
+
+                <!-- Section 5: Global Actions -->
+                <div class="control-section actions-section">
+                    <button id="btn-visualize" class="btn btn-primary btn-large">
+                        <svg class="btn-icon-svg" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+                        Visualize
+                    </button>
+                    <button id="btn-benchmark" class="btn btn-accent btn-large" style="margin-top: 8px;">
+                        <svg class="btn-icon-svg" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2zm0-4H7V7h10v2zm0 8H7v-2h10v2z"/></svg>
+                        Run Benchmark
+                    </button>
+                    <div class="action-grid">
+                        <button id="btn-clear-path" class="btn btn-secondary">Clear Path</button>
+                        <button id="btn-clear-walls" class="btn btn-secondary">Clear Board</button>
+                    </div>
+                </div>
+
+                <!-- Section 6: Save & Load configurations -->
+                <div class="control-section save-load-section">
+                    <h3>Saved Layouts</h3>
+                    <div class="save-input-group">
+                        <input type="text" id="maze-name-input" placeholder="My Layout Name" class="form-input">
+                        <button id="btn-save-maze" class="btn btn-secondary">Save</button>
+                    </div>
+                    <div class="saved-list-container">
+                        <ul id="saved-mazes-list" class="saved-list">
+                            <!-- Items populated dynamically -->
+                            <li class="empty-list-msg">No saved layouts.</li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- MAIN GRID CANVAS -->
+            <main class="grid-workspace">
+                <!-- GRID LEGEND -->
+                <div class="grid-legend glass">
+                    <div class="legend-item"><div class="legend-node start-node"></div> <span>Start</span></div>
+                    <div class="legend-item"><div class="legend-node target-node"></div> <span>Target</span></div>
+                    <div class="legend-item"><div class="legend-node wall-node"></div> <span>Wall</span></div>
+                    <div class="legend-item"><div class="legend-node weight-node"></div> <span>Mud (Cost 5)</span></div>
+                    <div class="legend-item"><div class="legend-node visited-node-a"></div> <span>Visited (A)</span></div>
+                    <div class="legend-item"><div class="legend-node visited-node-b select-b-only"></div> <span class="select-b-only">Visited (B)</span></div>
+                    <div class="legend-item"><div class="legend-node shortest-path-node"></div> <span>Shortest Path</span></div>
+                </div>
+
+                <!-- SINGLE / SPLIT GRID WRAPPERS -->
+                <div id="grid-layout-container" class="grid-layout-single">
+                    
+                    <!-- GRID PANEL A -->
+                    <div id="panel-a" class="grid-panel glass">
+                        <div class="panel-header">
+                            <span class="panel-title" id="title-grid-a">Grid A — A* Search</span>
+                            <div class="panel-stats" id="stats-a">
+                                <span>Visited: <strong id="stat-visited-a">0</strong></span>
+                                <span>Path Cost: <strong id="stat-cost-a">0</strong></span>
+                                <span>Max Frontier: <strong id="stat-frontier-a">0</strong></span>
+                                <span>Time: <strong id="stat-time-a">0ms</strong></span>
+                                <span>Observed Nodes: <strong id="stat-memory-a">0</strong></span>
+                                <span>Branch Factor: <strong id="stat-branch-a">0</strong></span>
+                            </div>
+                        </div>
+                        <div class="grid-wrapper">
+                            <div id="grid-a" class="grid-body"></div>
+                        </div>
+                    </div>
+
+                    <!-- GRID PANEL B (HIDDEN IN SINGLE MODE) -->
+                    <div id="panel-b" class="grid-panel glass hidden">
+                        <div class="panel-header">
+                            <span class="panel-title" id="title-grid-b">Grid B — BFS</span>
+                            <div class="panel-stats" id="stats-b">
+                                <span>Visited: <strong id="stat-visited-b">0</strong></span>
+                                <span>Path Cost: <strong id="stat-cost-b">0</strong></span>
+                                <span>Max Frontier: <strong id="stat-frontier-b">0</strong></span>
+                                <span>Time: <strong id="stat-time-b">0ms</strong></span>
+                                <span>Observed Nodes: <strong id="stat-memory-b">0</strong></span>
+                                <span>Branch Factor: <strong id="stat-branch-b">0</strong></span>
+                            </div>
+                        </div>
+                        <div class="grid-wrapper">
+                            <div id="grid-b" class="grid-body"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- COMPARISON HUD (SHOWN AFTER COMPARISON RUNS) -->
+                <div id="comparison-hud" class="comparison-hud glass hidden">
+                    <div class="hud-header">
+                        <div class="hud-logo"></div>
+                        <h3>DynaViz Algorithm Battle Report</h3>
+                    </div>
+                    <div class="hud-body">
+                        <div class="hud-metric-row">
+                            <div class="hud-metric-card" id="card-winner-nodes">
+                                <span class="hud-card-label">Exploration Efficiency</span>
+                                <h4 id="hud-val-nodes">A* visited 45% fewer nodes</h4>
+                                <p id="hud-detail-nodes">Grid A (A*) explored 82 nodes vs Grid B (BFS) 150 nodes.</p>
+                            </div>
+                            <div class="hud-metric-card" id="card-winner-cost">
+                                <span class="hud-card-label">Path Optimality</span>
+                                <h4 id="hud-val-cost">Both found the optimal path</h4>
+                                <p id="hud-detail-cost">Shortest path cost: 24.0</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Benchmark Table Card -->
+                        <div class="hud-metric-card" style="grid-column: span 2; margin-top: 8px;">
+                            <span class="hud-card-label" style="margin-bottom: 10px;">Benchmark Performance Board (All Algorithms)</span>
+                            <div class="hud-table-wrapper" style="overflow-x: auto; width: 100%;">
+                                <table class="benchmark-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Algorithm</th>
+                                            <th>Execution Time</th>
+                                            <th>Nodes Visited</th>
+                                            <th>Path Cost</th>
+                                            <th>Peak Frontier</th>
+                                            <th>Observed Nodes</th>
+                                            <th>Branch Factor</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="benchmark-table-body">
+                                        <!-- Populated dynamically via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- JavaScript files -->
+    <script src="app.js?v=2"></script>
+</body>
+</html>
